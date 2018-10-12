@@ -8,9 +8,9 @@ import os  # for making directories
 import genPolygon as gp
 
     
-TRAINING_IMGS = 1024 # number of training images to generate
+TRAINING_IMGS = 24 # number of training images to generate
 VALIDATION_IMGS = 16 # number of validation images to generate
-NUM_POSSIBLE_SHAPES = 2 # number of possible shapes to try
+NUM_SHAPE_TYPES = 2 # number of possible shapes to try
 IMG_SIZE = 252 # height and width of image
 
 def getShape(choice): # modify this as you see fit
@@ -36,15 +36,15 @@ if __name__ == '__main__':
     shutil.rmtree('trainingShapes', ignore_errors=True)
     shutil.rmtree('validationShapes', ignore_errors=True)
     
-    shapenames = 'square', 'circle'#,'star'
+    shapenames = 'square', 'circle','star'
     f = open('labels.txt', 'w')
     
-    for x in shapenames:
-        if not os.path.exists('trainingShapes/'+x+'/'):
-            os.makedirs('trainingShapes/'+x+'/')
-        if not os.path.exists('validationShapes/'+x+'/'):
-            os.makedirs('validationShapes/'+x+'/')
-        f.write(x+"\n")
+    for x in range(NUM_SHAPE_TYPES):
+        if not os.path.exists('trainingShapes/'+shapenames[x]+'/'):
+            os.makedirs('trainingShapes/'+shapenames[x]+'/')
+        if not os.path.exists('validationShapes/'+shapenames[x]+'/'):
+            os.makedirs('validationShapes/'+shapenames[x]+'/')
+        f.write(shapenames[x]+"\n")
         
     f.close()
     
@@ -52,7 +52,7 @@ if __name__ == '__main__':
         data = np.zeros((IMG_SIZE, IMG_SIZE, 3), dtype=np.uint8)
 
         angle = random.randint(0, 360)
-        shapeChoice = random.randint(0, NUM_POSSIBLE_SHAPES-1)
+        shapeChoice = random.randint(0, NUM_SHAPE_TYPES-1)
         shape, args, label = getShape(shapeChoice)       
         
         gp.place_obj(data, (int(IMG_SIZE/2), int(IMG_SIZE/2)), angle,
@@ -66,7 +66,7 @@ if __name__ == '__main__':
         data = np.zeros((IMG_SIZE, IMG_SIZE, 3), dtype=np.uint8)
 
         angle = random.randint(0, 360)
-        shapeChoice = random.randint(0, NUM_POSSIBLE_SHAPES-1)
+        shapeChoice = random.randint(0, NUM_SHAPE_TYPES-1)
         shape, args, label = getShape(shapeChoice)       
         
         gp.place_obj(data, (int(IMG_SIZE/2), int(IMG_SIZE/2)), angle,

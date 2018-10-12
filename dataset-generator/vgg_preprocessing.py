@@ -38,8 +38,8 @@ _R_MEAN = 123.68 / 255
 _G_MEAN = 116.78 / 255
 _B_MEAN = 103.94 / 255
 
-_RESIZE_SIDE_MIN = 256 #256
-_RESIZE_SIDE_MAX = 512 #512
+_RESIZE_SIDE_MIN = 256
+_RESIZE_SIDE_MAX = 512
 
 
 def _crop(image, offset_height, offset_width, crop_height, crop_width):
@@ -275,7 +275,6 @@ def _aspect_preserving_resize(image, smallest_side):
   new_height, new_width = _smallest_size_at_least(height, width, smallest_side)
   image = tf.expand_dims(image, 0)
   resized_image = tf.image.resize_bilinear(image, [new_height, new_width],
-
                                            align_corners=False)
   resized_image = tf.squeeze(resized_image)
   resized_image.set_shape([None, None, 3])
