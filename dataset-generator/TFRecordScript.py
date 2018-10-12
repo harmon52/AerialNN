@@ -88,10 +88,10 @@ tf.app.flags.DEFINE_string('validation_directory', 'validationShapes',
 tf.app.flags.DEFINE_string('output_directory', 'outputShapes',
                            'Output data directory')
 
-tf.app.flags.DEFINE_integer('train_shards', 10,
+tf.app.flags.DEFINE_integer('train_shards', 1024,
                             'Number of shards in training TFRecord files.') 
 # number of shards =  number of images
-tf.app.flags.DEFINE_integer('validation_shards', 2,
+tf.app.flags.DEFINE_integer('validation_shards', 16,
                             'Number of shards in validation TFRecord files.')
 
 tf.app.flags.DEFINE_integer('num_threads', 2,
