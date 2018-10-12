@@ -1,3 +1,6 @@
+#  Easy fixes to known issues:
+#   - tensor shapes not matching after a size change? delete checkpoints (outputShapes/tb)
+#
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -11,20 +14,22 @@ import os
 import vgg_preprocessing
 
 tf.logging.set_verbosity(tf.logging.INFO)
-_DEFAULT_IMAGE_SIZE = 32
+_DEFAULT_IMAGE_SIZE = 64
 _NUM_CHANNELS = 3
 _NUM_CLASSES = 2
+_NUM_TRAIN = 1024
 
 tf.app.flags.DEFINE_string('output_directory', 'outputShapes', 'Output data directory')
 
 FLAG = tf.app.flags.FLAGS
 
 
+"""Model function for CNN."""
 def cnn_model_fn(features, labels, mode):
-    """Model function for CNN."""
+    
     # Input Layer
     input_layer = tf.reshape(features["image"], [-1, _DEFAULT_IMAGE_SIZE, _DEFAULT_IMAGE_SIZE, 3])
-
+ 
     # Convolutional Layer #1
     conv1 = tf.layers.conv2d(
         inputs=input_layer,
@@ -32,10 +37,10 @@ def cnn_model_fn(features, labels, mode):
         kernel_size=[5, 5],
         padding="same",
         activation=tf.nn.relu)
-
+ 
     # Pooling Layer #1
     pool1 = tf.layers.max_pooling2d(inputs=conv1, pool_size=[2, 2], strides=2)
-
+ 
     # Convolutional Layer #2 and Pooling Layer #2
     conv2 = tf.layers.conv2d(
         inputs=pool1,
@@ -44,13 +49,13 @@ def cnn_model_fn(features, labels, mode):
         padding="same",
         activation=tf.nn.relu)
     pool2 = tf.layers.max_pooling2d(inputs=conv2, pool_size=[2, 2], strides=2)
-
+ 
     # Dense Layer
-    pool2_flat = tf.reshape(pool2, [-1, 126 * 126 * 64])
+    pool2_flat = tf.reshape(pool2, [-1, 32 * 32 *32]) # wants 131072 for some reason
     dense = tf.layers.dense(inputs=pool2_flat, units=1024, activation=tf.nn.relu)
     dropout = tf.layers.dropout(
         inputs=dense, rate=0.4, training=mode == tf.estimator.ModeKeys.TRAIN)
-
+ 
     # Logits Layer
     logits = tf.layers.dense(inputs=dropout, units=2)
 
@@ -131,8 +136,7 @@ def get_file_lists(data_dir):
 
 
 def input_fn(is_training, filenames, batch_size, num_epochs=1, num_parallel_calls=1):
-    dataset = tf.data.TFRecordDataset(filenames) # new method
-    #dataset = tf.contrib.data.TFRecordDataset(filenames) # old method
+    dataset = tf.data.TFRecordDataset(filenames)
 
     if is_training:
         dataset = dataset.shuffle(buffer_size=1500)
@@ -175,3 +179,4 @@ def main(unused_arg):
 
 if __name__ == '__main__':
     tf.app.run()
+

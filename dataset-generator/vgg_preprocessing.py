@@ -38,8 +38,8 @@ _R_MEAN = 123.68 / 255
 _G_MEAN = 116.78 / 255
 _B_MEAN = 103.94 / 255
 
-_RESIZE_SIDE_MIN = 256
-_RESIZE_SIDE_MAX = 512
+_RESIZE_SIDE_MIN = 64 #256
+_RESIZE_SIDE_MAX = 64 #512
 
 
 def _crop(image, offset_height, offset_width, crop_height, crop_width):
