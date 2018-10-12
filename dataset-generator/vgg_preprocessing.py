@@ -275,6 +275,7 @@ def _aspect_preserving_resize(image, smallest_side):
   new_height, new_width = _smallest_size_at_least(height, width, smallest_side)
   image = tf.expand_dims(image, 0)
   resized_image = tf.image.resize_bilinear(image, [new_height, new_width],
+
                                            align_corners=False)
   resized_image = tf.squeeze(resized_image)
   resized_image.set_shape([None, None, 3])
